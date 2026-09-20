@@ -124,4 +124,107 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   renderLeader(siteData.leader); renderTeachers(siteData.teachers); renderGallery(siteData.gallery);
   setupInteractions();
+  setupSupabase();
 });
+
+const ADMIN_EMAIL = "carmelsindayihebura@gmail.com";
+let supabaseClient;
+let currentUser;
+let selectedRating = 0;
+
+function loadSupabase() {
+  if (window.supabase) return Promise.resolve(window.supabase);
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+    script.onload = () => resolve(window.supabase);
+    script.onerror = () => reject(new Error("Supabase CDN indisponible"));
+    document.head.appendChild(script);
+  });
+}
+const sessionId = () => {
+  let id = sessionStorage.getItem("school-session-id");
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem("school-session-id", id);
+  }
+  return id;
+};
+const showMessage = (selector, message, error = false) => {
+  const node = document.querySelector(selector);
+  if (node) { node.textContent = message; node.classList.toggle("is-error", error); }
+};
+function renderReviews(reviews) {
+  const list = document.querySelector("#reviews-list");
+  if (!list) return;
+  list.innerHTML = reviews.length ? reviews.map(review => `<article class="review-item"><div class="review-heading"><strong>${escapeHtml(review.display_name)}</strong><span class="stars" aria-label="${review.rating} sur 5">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</span></div><p>${escapeHtml(review.comment)}</p><time datetime="${escapeHtml(review.created_at)}">${new Date(review.created_at).toLocaleDateString("fr-FR")}</time></article>`).join("") : '<p class="content-state">Soyez le premier à partager votre expérience.</p>';
+}
+async function loadReviews() {
+  const { data, error } = await supabaseClient.from("reviews").select("id,display_name,rating,comment,created_at").eq("published", true).order("created_at", { ascending: false });
+  if (error) return showMessage("#reviews-list", "Les avis sont momentanément indisponibles.", true);
+  renderReviews(data || []);
+}
+function updateAuth(user) {
+  currentUser = user;
+  const signedIn = Boolean(user);
+  document.querySelector("#auth-form")?.toggleAttribute("hidden", signedIn);
+  document.querySelector("#logout-button")?.toggleAttribute("hidden", !signedIn);
+  document.querySelector("#review-form-wrap")?.toggleAttribute("hidden", !signedIn);
+  const status = signedIn ? `Connecté avec ${user.email}` : "Connectez-vous pour partager votre avis.";
+  showMessage("#auth-status", status);
+  const admin = signedIn && user.email?.toLowerCase() === ADMIN_EMAIL;
+  document.querySelector("#admin-panel")?.toggleAttribute("hidden", !admin);
+  if (admin) loadAdmin();
+}
+async function loadAdmin() {
+  const [{ data: visits }, { data: reviews }] = await Promise.all([
+    supabaseClient.from("page_visits").select("id,session_id,visited_at,user_agent,referrer").order("visited_at", { ascending: false }).limit(100),
+    supabaseClient.from("reviews").select("id,display_name,rating,comment,published,created_at").order("created_at", { ascending: false }).limit(100)
+  ]);
+  const visitRows = visits || [];
+  const count = document.querySelector("#visit-count");
+  if (count) count.textContent = `${visitRows.length} visite(s) récentes`;
+  const visitsList = document.querySelector("#visits-list");
+  if (visitsList) visitsList.innerHTML = visitRows.slice(0, 20).map(v => `<p><time>${new Date(v.visited_at).toLocaleString("fr-FR")}</time><br><small>${escapeHtml(v.referrer || "Accès direct")}</small></p>`).join("") || "<p>Aucune visite.</p>";
+  const adminReviews = document.querySelector("#admin-reviews");
+  if (adminReviews) adminReviews.innerHTML = (reviews || []).map(r => `<article class="admin-review"><p><strong>${escapeHtml(r.display_name)}</strong> · ${"★".repeat(r.rating)}</p><p>${escapeHtml(r.comment)}</p><button class="button button-light" data-review-id="${escapeHtml(r.id)}" data-published="${r.published}">${r.published ? "Masquer" : "Publier"}</button></article>`).join("") || "<p>Aucun avis.</p>";
+}
+async function setupSupabase() {
+  try {
+    const sdk = await loadSupabase();
+    const config = window.SUPABASE_CONFIG;
+    if (!config?.url || !config?.anonKey) throw new Error("Configuration Supabase absente");
+    supabaseClient = sdk.createClient(config.url, config.anonKey);
+    await supabaseClient.from("page_visits").insert({ session_id: sessionId(), user_agent: navigator.userAgent.slice(0, 500), referrer: document.referrer.slice(0, 1000) });
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    updateAuth(session?.user);
+    supabaseClient.auth.onAuthStateChange((_event, nextSession) => updateAuth(nextSession?.user));
+    await loadReviews();
+    document.querySelector("#auth-form")?.addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      const action = event.submitter?.dataset.authAction || "signin";
+      const result = action === "signup"
+        ? await supabaseClient.auth.signUp({ email: form.get("email"), password: form.get("password"), options: { data: { display_name: form.get("displayName") } } })
+        : await supabaseClient.auth.signInWithPassword({ email: form.get("email"), password: form.get("password") });
+      if (result.error) return showMessage("#auth-status", result.error.message, true);
+      showMessage("#auth-status", action === "signup" ? "Inscription réussie. Vérifiez votre email. Connexion disponible dans 3 secondes…" : "Connexion réussie.");
+      if (action === "signup") await new Promise(resolve => setTimeout(resolve, 3000));
+    });
+    document.querySelector("#signup-button")?.addEventListener("click", () => { document.querySelector("#auth-form button[type=submit]")?.setAttribute("data-auth-action", "signup"); document.querySelector("#display-name-label")?.removeAttribute("hidden"); showMessage("#auth-status", "Renseignez votre email et choisissez un mot de passe."); });
+    document.querySelector("#logout-button")?.addEventListener("click", () => supabaseClient.auth.signOut());
+    document.querySelector("#review-form")?.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!currentUser || !selectedRating) return showMessage("#auth-status", "Choisissez une note avant de publier.", true);
+      const form = new FormData(event.currentTarget);
+      const { error } = await supabaseClient.from("reviews").insert({ user_id: currentUser.id, display_name: form.get("displayName"), rating: selectedRating, comment: form.get("comment") });
+      if (error) return showMessage("#auth-status", "Impossible de publier cet avis.", true);
+      event.currentTarget.reset(); selectedRating = 0; document.querySelectorAll("#rating-stars button").forEach(b => b.classList.remove("selected")); await loadReviews();
+    });
+    document.querySelector("#rating-stars")?.addEventListener("click", event => { const button = event.target.closest("button"); if (!button) return; selectedRating = Number(button.dataset.rating); document.querySelectorAll("#rating-stars button").forEach(b => b.classList.toggle("selected", Number(b.dataset.rating) <= selectedRating)); });
+    document.querySelector(".password-toggle")?.addEventListener("click", event => { const input = event.currentTarget.parentElement.querySelector("input"); input.type = input.type === "password" ? "text" : "password"; });
+    document.querySelector("#admin-panel")?.addEventListener("click", async event => { const button = event.target.closest("[data-review-id]"); if (!button) return; await supabaseClient.from("reviews").update({ published: button.dataset.published !== "true" }).eq("id", button.dataset.reviewId); await loadAdmin(); await loadReviews(); });
+  } catch (error) {
+    console.warn("Fonctionnalités communautaires indisponibles.", error.message);
+  }
+}

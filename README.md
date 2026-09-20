@@ -1,5 +1,16 @@
 # École du dimanche
 
+## Activer Supabase
+
+Le site conserve son fonctionnement vitrine et son contenu de secours (`assets/content.json`), mais propose maintenant les comptes email, les avis et le suivi de visites. La configuration publique se trouve dans `assets/supabase-config.js`. Une clé **publishable/anon** peut être livrée au navigateur : l'obfuscation n'est pas une mesure de sécurité et aucune clé `service_role` ne doit être ajoutée au dépôt.
+
+1. Dans le SQL Editor du projet Supabase, exécutez `schema.sql` (il crée les tables, index et politiques RLS).
+2. Dans **Authentication → Providers**, activez Email. Choisissez la confirmation d'email selon votre besoin, puis ajoutez l'URL de production Vercel (et son URL de prévisualisation utile) dans **URL Configuration → Redirect URLs**.
+3. L'adresse `carmelsindayihebura@gmail.com` est l'administrateur applicatif. Elle est reconnue par les policies RLS et voit le panneau de modération/visites après connexion. Pour changer l'administrateur, modifiez la constante dans `assets/app.js` et les policies dans `schema.sql`.
+4. Servez le dossier avec un serveur HTTP (voir ci-dessous) : les modules Supabase et `content.json` ne fonctionnent pas correctement en `file://`.
+
+Les visiteurs peuvent créer une ligne de visite mais la table `page_visits` n'est jamais lisible publiquement. Les avis publiés sont publics ; leur création/modération est protégée par RLS et les utilisateurs ne peuvent insérer qu'un avis portant leur propre `auth.uid()`. Le suivi (agent utilisateur, référent et identifiant de session) est limité à l'administration : informez les visiteurs, appliquez votre durée de conservation et vos obligations RGPD (base légale, droit d'accès/suppression, minimisation et éventuellement consentement cookies) selon votre juridiction. Le bouton d'inscription affiche un délai UX de 3 secondes avant de poursuivre.
+
 Site vitrine **100 % statique**, en français, sans PHP ni MySQL. Le dirigeant,
 les professeurs, leurs horaires du dimanche et la galerie sont chargés par
 JavaScript depuis `assets/content.json`. Les données locales fournies sont

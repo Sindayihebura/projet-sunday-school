@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/supabase-config.js"></script>
   <script src="assets/app.js" defer></script>
 </head>
 <body>
@@ -16,7 +17,7 @@
     <a class="brand" href="#accueil" aria-label="Accueil - École du dimanche"><img src="assets/logo.png" alt="" width="58" height="49"><span>École du dimanche<small>Grandir ensemble</small></span></a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
     <nav id="main-nav" class="main-nav" aria-label="Navigation principale">
-      <a href="#accueil">Accueil</a><a href="#dirigeant">Dirigeant</a><a href="#professeurs">Professeurs</a><a href="#galerie">Galerie</a>
+      <a href="#accueil">Accueil</a><a href="#dirigeant">Dirigeant</a><a href="#professeurs">Professeurs</a><a href="#galerie">Galerie</a><a href="#communaute">Communauté</a>
     </nav>
   </header>
   <main>
@@ -25,6 +26,17 @@
     <section id="dirigeant" class="section-wrap section leader-section"><div class="section-heading"><p class="eyebrow">Une équipe engagée</p><h2>Une présence qui <em>inspire</em></h2></div><div class="leader-card card"><div id="leader-portrait" class="leader-portrait"><span>…</span></div><div id="leader-content"><p id="leader-message" class="quote">Chargement des informations…</p><h3 id="leader-name"></h3><p id="leader-role" class="role"></p></div><span class="card-spark">✦</span></div></section>
     <section id="professeurs" class="section team-section"><div class="section-wrap"><div class="section-heading heading-row"><div><p class="eyebrow">Des visages familiers</p><h2>Nos <em>professeurs</em></h2></div><p>Une équipe passionnée et attentive,<br>au service de chaque enfant.</p></div><div id="teachers-grid" class="people-grid" aria-live="polite"></div></div></section>
     <section id="galerie" class="section-wrap section gallery-section"><div class="section-heading heading-row"><div><p class="eyebrow">Nos petits moments</p><h2>La vie en <em>images</em></h2></div><div id="gallery-filters" class="filters" role="group" aria-label="Filtrer la galerie"><button class="filter active" data-filter="all">Tout voir</button><button class="filter" data-filter="activites">Activités</button><button class="filter" data-filter="celebrations">Célébrations</button></div></div><div id="gallery-grid" class="gallery-grid" aria-live="polite"></div></section>
+    <section id="communaute" class="section-wrap section community-section">
+      <div class="section-heading"><p class="eyebrow">Votre espace</p><h2>La vie de la <em>communauté</em></h2></div>
+      <div class="community-grid">
+        <article id="auth-card" class="card community-card">
+          <h3>Se connecter</h3><p id="auth-status" class="content-state">Connectez-vous pour partager votre avis.</p>
+          <form id="auth-form"><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Mot de passe<div class="password-field"><input name="password" type="password" required minlength="6" autocomplete="current-password"><button type="button" class="password-toggle" aria-label="Afficher le mot de passe">👁</button></div></label><label id="display-name-label" hidden>Prénom ou nom<input name="displayName" maxlength="80" autocomplete="name"></label><div class="form-actions"><button class="button button-primary" type="submit" data-auth-action="signin">Connexion</button><button class="button button-light" type="button" id="signup-button">Créer un compte</button></div></form><button id="logout-button" class="button button-light" type="button" hidden>Se déconnecter</button>
+        </article>
+        <article class="card community-card"><h3>Avis de la communauté</h3><div id="review-form-wrap" hidden><form id="review-form"><label>Votre nom<input name="displayName" required maxlength="80"></label><fieldset><legend>Note</legend><div id="rating-stars" class="rating-stars" role="radiogroup" aria-label="Note de 1 à 5"><button type="button" data-rating="1" aria-label="1 étoile">★</button><button type="button" data-rating="2" aria-label="2 étoiles">★</button><button type="button" data-rating="3" aria-label="3 étoiles">★</button><button type="button" data-rating="4" aria-label="4 étoiles">★</button><button type="button" data-rating="5" aria-label="5 étoiles">★</button></div></fieldset><label>Votre message<textarea name="comment" required maxlength="1000" rows="3"></textarea><button class="button button-primary" type="submit">Publier mon avis</button></form></div><div id="reviews-list" aria-live="polite"><p class="content-state">Chargement des avis…</p></div></article>
+      </div>
+      <article id="admin-panel" class="card admin-panel" hidden><h3>Administration</h3><div class="admin-columns"><div><h4>Visites</h4><p id="visit-count">—</p><div id="visits-list"></div></div><div><h4>Avis à modérer</h4><div id="admin-reviews"></div></div></div></article>
+    </section>
   </main>
   <div id="gallery-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden><div class="modal-backdrop" data-close-modal></div><div class="modal-content"><button class="modal-close" type="button" aria-label="Fermer" data-close-modal>×</button><img id="modal-image" src="" alt=""><div class="modal-caption"><p class="eyebrow" id="modal-category"></p><h2 id="modal-title"></h2><p id="modal-description"></p></div></div></div>
   <footer><div class="section-wrap footer-inner"><div class="brand"><img src="assets/logo.png" alt="" width="48" height="41"><span>École du dimanche<small>Grandir ensemble</small></span></div><p>© <span id="year"></span> École du dimanche · Fait avec cœur</p><a href="#accueil">Retour en haut ↑</a></div></footer>
