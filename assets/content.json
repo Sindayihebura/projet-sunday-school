@@ -1,0 +1,37 @@
+{
+  "leader": {
+    "name": "Jean-Marc Kouassi",
+    "role": "Dirigeant de l'école du dimanche",
+    "message": "Chaque enfant est une graine pleine de promesses. Notre rôle est de l'accompagner avec bienveillance pour qu'il puisse fleurir.",
+    "photo": "assets/leader.svg"
+  },
+  "teachers": [
+    {
+      "name": "Grâce N'Guessan",
+      "role": "Groupe des petits",
+      "schedule": "Dimanche · 9 h 00 – 10 h 30",
+      "bio": "Toujours un sourire et une histoire à partager.",
+      "photo": "assets/teacher-grace.svg"
+    },
+    {
+      "name": "Samuel Yao",
+      "role": "Groupe des moyens",
+      "schedule": "Dimanche · 9 h 00 – 10 h 30",
+      "bio": "Il transforme chaque leçon en aventure.",
+      "photo": "assets/teacher-samuel.svg"
+    },
+    {
+      "name": "Esther Kouamé",
+      "role": "Groupe des grands",
+      "schedule": "Dimanche · 9 h 00 – 10 h 30",
+      "bio": "Elle encourage les talents de chacun.",
+      "photo": "assets/teacher-esther.svg"
+    }
+  ],
+  "gallery": [
+    {"title": "Atelier créatif", "category": "activites", "description": "Créer ensemble, c'est déjà apprendre ensemble.", "image": "assets/atelier.svg"},
+    {"title": "Un dimanche en joie", "category": "celebrations", "description": "Des chants et des sourires qui résonnent.", "image": "assets/chants.svg"},
+    {"title": "Jeux en plein air", "category": "activites", "description": "Bouger, rire et se faire de nouveaux amis.", "image": "assets/jeux.svg"},
+    {"title": "Le temps du partage", "category": "celebrations", "description": "Un moment calme pour écouter et grandir.", "image": "assets/partage.svg"}
+  ]
+}

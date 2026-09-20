@@ -1,0 +1,21 @@
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Dépendances et sorties de build
+node_modules/
+dist/
+build/
+.netlify/
+
+# Fichiers temporaires et journaux
+*.log
+*.tmp
+*.swp
+
+# Variables d'environnement et secrets locaux
+.env
+.env.*
+!.env.example

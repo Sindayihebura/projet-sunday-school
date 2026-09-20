@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="L'école du dimanche : apprendre, partager et grandir ensemble.">
+  <title>École du dimanche | Grandir ensemble</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#accueil" aria-label="Accueil - École du dimanche"><img src="assets/logo.png" alt="" width="58" height="49"><span>École du dimanche<small>Grandir ensemble</small></span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
+    <nav id="main-nav" class="main-nav" aria-label="Navigation principale">
+      <a href="#accueil">Accueil</a><a href="#dirigeant">Dirigeant</a><a href="#professeurs">Professeurs</a><a href="#galerie">Galerie</a>
+    </nav>
+  </header>
+  <main>
+    <section id="accueil" class="hero section-wrap"><div class="hero-copy"><p class="eyebrow">Bienvenue dans notre communauté</p><h1>Apprendre, partager,<br><em>grandir ensemble.</em></h1><p class="hero-text">Un espace chaleureux où chaque enfant découvre la foi, développe ses talents et trouve sa place parmi nous.</p><div class="hero-actions"><a class="button button-primary" href="#professeurs">Découvrir l'équipe <span>→</span></a><a class="text-link" href="#galerie">Voir la galerie</a></div><div class="hero-note"><span class="avatar-stack" aria-hidden="true"><i>👧</i><i>👦</i><i>🧒</i></span><span><strong>Une communauté qui grandit</strong><small>Chaque dimanche, avec joie</small></span></div></div><div class="hero-art" aria-label="Illustration d'enfants qui apprennent ensemble" role="img"><div class="sun"></div><div class="hill hill-back"></div><div class="hill hill-front"></div><div class="book book-one">✦</div><div class="book book-two">♥</div><div class="child child-one">👧</div><div class="child child-two">👦</div><div class="sparkles">✦　✧<br>　✦</div></div></section>
+    <section class="welcome-strip"><div class="section-wrap strip-content"><span class="strip-icon">✦</span><p><strong>Un dimanche pas comme les autres</strong><br><span>Des histoires, des sourires et de belles rencontres pour tous les âges.</span></p><a href="#dirigeant">Notre vision&nbsp; →</a></div></section>
+    <section id="dirigeant" class="section-wrap section leader-section"><div class="section-heading"><p class="eyebrow">Une équipe engagée</p><h2>Une présence qui <em>inspire</em></h2></div><div class="leader-card card"><div id="leader-portrait" class="leader-portrait"><span>…</span></div><div id="leader-content"><p id="leader-message" class="quote">Chargement des informations…</p><h3 id="leader-name"></h3><p id="leader-role" class="role"></p></div><span class="card-spark">✦</span></div></section>
+    <section id="professeurs" class="section team-section"><div class="section-wrap"><div class="section-heading heading-row"><div><p class="eyebrow">Des visages familiers</p><h2>Nos <em>professeurs</em></h2></div><p>Une équipe passionnée et attentive,<br>au service de chaque enfant.</p></div><div id="teachers-grid" class="people-grid" aria-live="polite"></div></div></section>
+    <section id="galerie" class="section-wrap section gallery-section"><div class="section-heading heading-row"><div><p class="eyebrow">Nos petits moments</p><h2>La vie en <em>images</em></h2></div><div id="gallery-filters" class="filters" role="group" aria-label="Filtrer la galerie"><button class="filter active" data-filter="all">Tout voir</button><button class="filter" data-filter="activites">Activités</button><button class="filter" data-filter="celebrations">Célébrations</button></div></div><div id="gallery-grid" class="gallery-grid" aria-live="polite"></div></section>
+  </main>
+  <div id="gallery-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden><div class="modal-backdrop" data-close-modal></div><div class="modal-content"><button class="modal-close" type="button" aria-label="Fermer" data-close-modal>×</button><img id="modal-image" src="" alt=""><div class="modal-caption"><p class="eyebrow" id="modal-category"></p><h2 id="modal-title"></h2><p id="modal-description"></p></div></div></div>
+  <footer><div class="section-wrap footer-inner"><div class="brand"><img src="assets/logo.png" alt="" width="48" height="41"><span>École du dimanche<small>Grandir ensemble</small></span></div><p>© <span id="year"></span> École du dimanche · Fait avec cœur</p><a href="#accueil">Retour en haut ↑</a></div></footer>
+</body>
+</html>
