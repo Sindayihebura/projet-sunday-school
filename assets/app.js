@@ -73,6 +73,7 @@ function setupInteractions() {
     });
   });
   const modal = document.querySelector("#gallery-modal");
+  modal.hidden = true;
   const openModal = item => {
     const data = siteData.gallery[Number(item.dataset.index)];
     document.querySelector("#modal-image").src = data.image;
