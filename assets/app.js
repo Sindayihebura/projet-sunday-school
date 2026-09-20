@@ -222,7 +222,10 @@ async function setupSupabase() {
       event.currentTarget.reset(); selectedRating = 0; document.querySelectorAll("#rating-stars button").forEach(b => b.classList.remove("selected")); await loadReviews();
     });
     document.querySelector("#rating-stars")?.addEventListener("click", event => { const button = event.target.closest("button"); if (!button) return; selectedRating = Number(button.dataset.rating); document.querySelectorAll("#rating-stars button").forEach(b => b.classList.toggle("selected", Number(b.dataset.rating) <= selectedRating)); });
-    document.querySelector(".password-toggle")?.addEventListener("click", event => { const input = event.currentTarget.parentElement.querySelector("input"); input.type = input.type === "password" ? "text" : "password"; });
+    document.querySelector("#show-password")?.addEventListener("change", event => {
+      const input = document.querySelector("#auth-password");
+      if (input) input.type = event.currentTarget.checked ? "text" : "password";
+    });
     document.querySelector("#admin-panel")?.addEventListener("click", async event => { const button = event.target.closest("[data-review-id]"); if (!button) return; await supabaseClient.from("reviews").update({ published: button.dataset.published !== "true" }).eq("id", button.dataset.reviewId); await loadAdmin(); await loadReviews(); });
   } catch (error) {
     console.warn("Fonctionnalités communautaires indisponibles.", error.message);
